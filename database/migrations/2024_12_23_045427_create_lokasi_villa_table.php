@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('lokasi_villa', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_user');
-            $table->string('email_user')->unique();
-            $table->string('password_user');
+            $table->unsignedBigInteger('id_villa');
+            $table->string('lokasi_villa', 100);
             $table->timestamps();
+            $table->softDeletes();
+            $table->foreign('id_villa')->references('id')->on('list_villa');
         });
     }
 
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('lokasi_villa');
     }
 };
