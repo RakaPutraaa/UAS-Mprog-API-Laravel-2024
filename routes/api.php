@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\KabupatenController;
+use App\Http\Controllers\ListVillaController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,3 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [UserController::class,'register']);
 Route::post('/login', [UserController::class, 'login']);
+Route::post('/add-villa', [ListVillaController::class, 'store']);
+
+// testing
+Route::get('/kabupaten', [KabupatenController::class, 'index']);
