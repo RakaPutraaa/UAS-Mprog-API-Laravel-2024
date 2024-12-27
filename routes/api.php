@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\KabupatenController;
-use App\Http\Controllers\ListVillaController;
-use App\Http\Controllers\UserController;
+use sanctum;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\KabupatenController;
+use App\Http\Controllers\ListVillaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,10 +19,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
-Route::post('/register', [UserController::class,'register']);
-Route::post('/login', [UserController::class, 'login']);
-Route::post('/add-villa', [ListVillaController::class, 'store']);
-
+Route::middleware(['auth:sanctum'])->group(function(){
+    Route::post('/register', [UserController::class,'register']);
+    Route::post('/login', [UserController::class, 'login']);
+    Route::post('/add-villa', [ListVillaController::class, 'store']);
+});
+// middleware
 // testing
 Route::get('/kabupaten', [KabupatenController::class, 'index']);
