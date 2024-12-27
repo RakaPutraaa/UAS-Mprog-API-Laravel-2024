@@ -15,12 +15,13 @@ class ListVillaController extends Controller
     // create
     public function store(Request $request) {
         try {
+            // validasi untuk inputan
             $validated = $request->validate([
                 'nama_villa' => 'required',
                 'deskripsi_villa' => 'required',
                 'harga_villa' => 'required',
                 'lokasi_villa' => 'required',
-                'id_kabupaten' => 'required|exists:kabupaten,id'
+                'id_kabupaten' => 'required|exists:kabupaten,id' //cek table kabupaten di column id
             ]);
 
             // pengambilan gambar
@@ -28,12 +29,15 @@ class ListVillaController extends Controller
             $fileName='';
             $extension='';
             if($request->foto_villa){
+                // mengubah nama image agar unique
                 $fileName = $this->generateRandomString().'.'.$request->foto_villa->extension();
                 // menaruh foto di folder image
                 $filepath = $request->foto_villa->storeAs('image', $fileName, 'public');
             }
 
+            // mengambil semua value di request kecuali foto_villa
             $data = $request->except(['foto_villa']);
+            // value foto_villa diambil
             $data['foto_villa'] = $filepath;
 
             // memasukkan list villa
