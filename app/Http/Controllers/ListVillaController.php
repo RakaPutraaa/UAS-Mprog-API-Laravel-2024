@@ -21,6 +21,7 @@ class ListVillaController extends Controller
                 'deskripsi_villa' => 'required',
                 'harga_villa' => 'required',
                 'lokasi_villa' => 'required',
+                'foto_villa' => 'required|mimes:jpeg, jpg, png|max:1000',
                 'id_kabupaten' => 'required|exists:kabupaten,id' //cek table kabupaten di column id
             ]);
 
