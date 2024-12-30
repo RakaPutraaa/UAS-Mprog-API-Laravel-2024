@@ -63,11 +63,12 @@ class ListVillaController extends Controller
     // show detail
     public function showDetail($id){
         try{
-            $villa = ListVilla::with('lokasi:id,daerah')->findOrFail($id);
+            // mendapatkan list villa sesuai id
+            $villa = ListVilla::with('lokasi:id,daerah')->findOrFail($id); //mendapatkan nama daerah sesuai id
             return response()->json([
                 'message'=>'success',
                 'status'=>200,
-                'villa'=> new DetailListVillaResource($villa)
+                'villa'=> new DetailListVillaResource($villa) //menampilkan detail villa
             ],200);
         }catch(QueryException $e){
             return response()->json([
@@ -80,12 +81,21 @@ class ListVillaController extends Controller
 
     // show all villa
     public function index() {
-        $villa = ListVilla::all();
-        return response()->json([
-            'message' => 'success',
-            'status' => 200,
-            'villa' => ListVillaResource::collection($villa)
-        ],200);
+        try{
+            // mendapatkan list semua villa
+            $villa = ListVilla::all();
+            return response()->json([
+                'message' => 'success',
+                'status' => 200,
+                'villa' => ListVillaResource::collection($villa) //menampilkan semua villa
+            ],200);
+        }catch(QueryException $e) {
+            return response()->json([
+                'message' => 'failed',
+                'status' => 500,
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     // update
