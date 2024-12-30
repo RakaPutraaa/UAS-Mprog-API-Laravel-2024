@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DetailListVillaResource;
 use App\Http\Resources\ListVillaResource;
 use App\Models\ListVilla;
 use App\Models\LokasiVilla;
@@ -60,8 +61,13 @@ class ListVillaController extends Controller
     }
 
     // show detail
-    public function showDetail(){
-
+    public function showDetail($id){
+        $villa = ListVilla::with('lokasi:id,daerah')->findOrFail($id);
+        return response()->json([
+            'message'=>'success',
+            'status'=>200,
+            'villa'=> new DetailListVillaResource($villa)
+        ],200);
     }
 
     // show all villa
