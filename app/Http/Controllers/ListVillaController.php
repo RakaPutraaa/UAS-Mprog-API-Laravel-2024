@@ -62,12 +62,20 @@ class ListVillaController extends Controller
 
     // show detail
     public function showDetail($id){
-        $villa = ListVilla::with('lokasi:id,daerah')->findOrFail($id);
-        return response()->json([
-            'message'=>'success',
-            'status'=>200,
-            'villa'=> new DetailListVillaResource($villa)
-        ],200);
+        try{
+            $villa = ListVilla::with('lokasi:id,daerah')->findOrFail($id);
+            return response()->json([
+                'message'=>'success',
+                'status'=>200,
+                'villa'=> new DetailListVillaResource($villa)
+            ],200);
+        }catch(QueryException $e){
+            return response()->json([
+                'message' => 'failed',
+                'status' => 500,
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     // show all villa
