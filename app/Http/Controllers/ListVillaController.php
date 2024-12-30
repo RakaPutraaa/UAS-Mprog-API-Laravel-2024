@@ -59,6 +59,21 @@ class ListVillaController extends Controller
         }
     }
 
+    // show detail
+    public function showDetail(){
+
+    }
+
+    // show all villa
+    public function index() {
+        $villa = ListVilla::all();
+        return response()->json([
+            'message' => 'success',
+            'status' => 200,
+            'villa' => ListVillaResource::collection($villa)
+        ],200);
+    }
+
     // update
     public function update() {
 
