@@ -22,6 +22,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/add-villa', [ListVillaController::class, 'store']);
     Route::get('/show-detail-villa/{id}', [ListVillaController::class,'showDetail']);
     Route::get('/show-all-villa',[ListVillaController::class,'index']);
+    Route::get('/destroy/{id}', [ListVillaController::class,'destroy']);
 });
 
 Route::post('/register', [UserController::class,'register']);
