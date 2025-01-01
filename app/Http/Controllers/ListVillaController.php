@@ -104,8 +104,37 @@ class ListVillaController extends Controller
     }
 
     // delete
-    public function delete() {
+    public function destroy($id) {
+        try {
 
+            // dapatkan id user logged-in
+            $idUser = Auth::id();
+
+            // mendapatkan villa sesuai id
+            $villa = ListVilla::findOrFail($id);
+
+            // cek id user logged-in
+            if ($idUser != $villa->id_user) {
+                return response()->json([
+                    'message' => 'failed',
+                    'status' => 500,
+                ], 500);
+            }else {
+                // jalankan delete jika hasil id sama
+                $villa->delete(); //melakukan delete
+                return response()->json([
+                    'message' => 'success',
+                    'status' => 200,
+                    'villa' => new DetailListVillaResource($villa)
+                ],200);
+            };
+        }catch(QueryException $e) {
+            return response()->json([
+                'message' => 'failed',
+                'status' => 500,
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     // random string
