@@ -99,8 +99,73 @@ class ListVillaController extends Controller
     }
 
     // update
-    public function update() {
+    public function update(Request $request, $id) {
+        try{
+            // dd($request->all());
 
+            // dapatkan id user logged-in
+            $idUser = Auth::id();
+
+            // mendapatkan villa sesuai id
+            $villa = ListVilla::findOrFail($id);
+
+            // cek apakah ini pemilik villa
+            if($idUser != $villa->id_user){
+                return response()->json([
+                    'message' => 'failed',
+                    'status' => 403,
+                ], 403);
+            }
+
+            // melakukan validasi terhadap input
+            $validated = $request->validate([
+                'nama_villa' => 'nullable',
+                'deskripsi_villa' => 'nullable',
+                'harga_villa' => 'nullable',
+                'lokasi_villa' => 'nullable',
+                'foto_villa' => 'nullable|mimes:jpeg, jpg, png|max:1000',
+                'id_kabupaten' => 'nullable|exists:kabupaten,id' //cek table kabupaten di column id
+            ]);
+
+            // menyimpan foto baru jika ada
+            $filePath = $villa->foto_villa; //default old image
+
+            // cek apakah ada image di form
+            if($request->hasFile('foto_villa')) {
+
+                // menghapus foto lama
+                if(Storage::exists('public/image' . $villa->foto_villa)){
+                    Storage::delete('public/image' . $villa->foto_villa);
+                }
+
+                // menyimpan foto baru
+                // pengambilan gambar
+                $filepath = null;
+                $fileName='';
+                $extension='';
+
+                // mengubah nama image agar unique
+                $fileName = $this->generateRandomString().'.'.$request->foto_villa->extension();
+                // menaruh foto di folder image
+                $filePath = $request->foto_villa->storeAs('image', $fileName, 'public');
+
+            }
+
+            $villa->update(array_merge($validated, ['foto_villa' => $filePath]));
+
+            return response()->json([
+                'message' => 'success',
+                'status' => 200,
+                'villa' => new DetailListVillaResource($villa)
+            ], 200);
+
+        }catch(QueryException $e) {
+            return response()->json([
+                'message' => 'failed',
+                'status' => 500,
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     // delete
@@ -131,9 +196,9 @@ class ListVillaController extends Controller
         }catch(QueryException $e) {
             return response()->json([
                 'message' => 'failed',
-                'status' => 500,
+                'status' => 403,
                 'error' => $e->getMessage()
-            ], 500);
+            ], 403);
         }
     }
 
